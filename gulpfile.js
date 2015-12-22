@@ -1,19 +1,9 @@
 var gulp = require('gulp'),
   nodemon = require('gulp-nodemon'),
   plumber = require('gulp-plumber'),
-  livereload = require('gulp-livereload'),
-  less = require('gulp-less');
-
-gulp.task('less', function () {
-  gulp.src('./public/css/*.less')
-    .pipe(plumber())
-    .pipe(less())
-    .pipe(gulp.dest('./public/css'))
-    .pipe(livereload());
-});
+  livereload = require('gulp-livereload')
 
 gulp.task('watch', function() {
-  gulp.watch('./public/css/*.less', ['less']);
 });
 
 gulp.task('develop', function () {
@@ -34,7 +24,6 @@ gulp.task('develop', function () {
 });
 
 gulp.task('default', [
-  'less',
   'develop',
   'watch'
 ]);
