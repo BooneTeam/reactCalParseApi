@@ -13,13 +13,43 @@ User = function () {
     });
   };
 
+  self.getSchedules = function(req,res,next){
+    var query = new Parse.Query(new Parse.Object("Schedule"));
+    query.equalTo('userId',req.params.id);
+    var d = new Date();
+    var todaysDate = new Date()
+    todaysDate.setDate(todaysDate.getDate());
+    todaysDate.setHours(-6);
+    todaysDate.setMinutes(0);
+    todaysDate.setSeconds(0);
+    console.log(todaysDate.toISOString())
+    query.greaterThanOrEqualTo( "onDate", todaysDate );
+    query.greaterThanOrEqualTo( "offDate", todaysDate );
+    todaysDate.setDate(todaysDate.getDate() + 1 );
+    console.log(todaysDate.toISOString())
+    query.lessThanOrEqualTo( "offDate", todaysDate );
+    query.find({
+      success: function (schedules) {
+        console.log(schedules)
+        res.send(schedules);
+      }
+    })
+  };
+
   self.getOne = function (req, res, next) {
     var params = req.params;
+    console.log(params)
     var query = new Parse.Query(Parse.User);
-    query.find({
-      options: {id: params.id},
-      success: function (users) {
-        res.send(users);
+      query.get(params.id,{
+      success: function (user) {
+        var schedule = new Parse.Object("Schedule");
+        schedule.save().then(function(schedule){
+          var userRelation = schedule.relation('userId');
+          userRelation.add(user);
+          schedule.set('test','boogers');
+          schedule.save();
+        });
+        //res.send(userObj);
       }
     });
   };

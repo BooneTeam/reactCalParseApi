@@ -15,6 +15,7 @@ router.use(function(req,res,next){
 /* GET users listing. */
 router.get('/', User.getAll);
 router.get('/:id', User.getOne);
+router.get('/:id/schedules', User.getSchedules);
 
 router.post('/', User.create);
 
