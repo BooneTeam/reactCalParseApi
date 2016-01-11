@@ -16,22 +16,24 @@ User = function () {
   self.getSchedules = function(req,res,next){
     var query = new Parse.Query(new Parse.Object("Schedule"));
     query.equalTo('userId',req.params.id);
+    console.log(req.query);
     var d = new Date();
-    var todaysDate = new Date()
+    var todaysDate = new Date();
     todaysDate.setDate(todaysDate.getDate());
     todaysDate.setHours(-6);
     todaysDate.setMinutes(0);
     todaysDate.setSeconds(0);
-    console.log(todaysDate.toISOString())
-    query.greaterThanOrEqualTo( "onDate", todaysDate );
-    query.greaterThanOrEqualTo( "offDate", todaysDate );
+    console.log(todaysDate.toISOString());
+    query.greaterThanOrEqualTo( "onDate", new Date(req.query.startDate));
     todaysDate.setDate(todaysDate.getDate() + 1 );
-    console.log(todaysDate.toISOString())
-    query.lessThanOrEqualTo( "offDate", todaysDate );
+    console.log(todaysDate.toISOString());
+    query.lessThanOrEqualTo( "offDate", new Date(req.query.endDate) );
     query.find({
       success: function (schedules) {
-        console.log(schedules)
         res.send(schedules);
+      },
+      error: function(error) {
+        console.log("Error: " + error.code + " " + error.message);
       }
     })
   };
